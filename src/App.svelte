@@ -3,19 +3,12 @@
     import PauseIcon from './icons/Pause.svelte'
     import ResetIcon from './icons/Reset.svelte'
     import { onMount } from 'svelte'
-    import { cellSize, next } from './game'
+    import { cellSize, next, random } from './game'
 
     let playing = false
     let interval = null
+    let currentGrid = random()
     let cellRadius = cellSize / 2
-    let currentGrid = Array.from(
-        { length: Math.floor(window.innerHeight / cellSize) },
-        () =>
-            Array.from(
-                { length: Math.floor(window.innerWidth / cellSize) },
-                () => Math.round(Math.random()) as 0 | 1
-            )
-    )
     let canvas: HTMLCanvasElement
     let ctx: CanvasRenderingContext2D
     const offset = (n: number) => n * (cellSize + 2) + cellRadius + 1
@@ -24,7 +17,7 @@
         canvas.height = window.innerHeight
         grid.forEach((row, y) => {
             row.forEach((isAlive, x) => {
-                const color = isAlive ? 'black' : 'white'
+                const color = isAlive ? 'gray' : 'white'
                 ctx.fillStyle = color
                 ctx.beginPath()
                 ctx.arc(offset(x), offset(y), cellRadius, 0, 2 * Math.PI, false)
@@ -32,7 +25,6 @@
             })
         })
     }
-
     const onPlay = () => {
         if (playing) {
             clearInterval(interval)
@@ -41,25 +33,16 @@
             interval = setInterval(() => {
                 currentGrid = next(currentGrid)
                 draw(ctx, currentGrid)
-            }, 50)
-            console.log(interval)
+            }, 25)
             playing = true
         }
     }
-
     const onRand = () => {
         if (playing) {
             clearInterval(interval)
             playing = false
         }
-        currentGrid = Array.from(
-            { length: Math.floor(window.innerHeight / cellSize) },
-            () =>
-                Array.from(
-                    { length: Math.floor(window.innerWidth / cellSize) },
-                    () => Math.round(Math.random()) as 0 | 1
-                )
-        )
+        currentGrid = random()
         draw(ctx, currentGrid)
     }
 
@@ -73,14 +56,23 @@
 
 <div class="absolute flex justify-center bottom-5 w-full">
     <div class="flex border shadow-2xl rounded-xl bg-white">
-        <button class="p-7" on:click|preventDefault={onPlay}>
-            {#if playing}
+        {#if playing}
+            <button
+                class="p-4 text-blue-500 outline-none"
+                on:click|preventDefault={onPlay}
+            >
                 <PauseIcon />
-            {:else}
+            </button>
+        {:else}
+            <button
+                class="p-4 text-red-600 outline-none"
+                on:click|preventDefault={onPlay}
+            >
                 <PlayIcon />
-            {/if}
-        </button>
-        <button class="p-7" on:click={onRand}><ResetIcon /></button>
+            </button>
+        {/if}
+        <button class="p-4 outline-none" on:click={onRand}><ResetIcon /></button
+        >
     </div>
 </div>
 

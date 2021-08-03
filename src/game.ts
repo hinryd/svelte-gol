@@ -39,3 +39,11 @@ export const next = (grid: (0 | 1)[][]) => {
         })
     )
 }
+
+export const random = () =>
+    Array.from({ length: Math.floor(window.innerHeight / cellSize) }, () =>
+        Array.from(
+            { length: Math.floor(window.innerWidth / cellSize) },
+            () => Math.round(Math.random()) as 0 | 1
+        )
+    )
