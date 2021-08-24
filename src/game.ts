@@ -49,3 +49,19 @@ export const random = () =>
             () => Math.round(Math.random()) as 0 | 1
         )
     )
+
+export const fps = (() => {
+    const { subscribe, set, update } = writable(0)
+    let times = []
+    return {
+        subscribe,
+        calculate: () => {
+            const now = performance.now()
+            while (times.length > 0 && times[0] <= now - 1000) {
+                times.shift()
+            }
+            times.push(now)
+            set(times.length)
+        }
+    }
+})()

@@ -3,7 +3,7 @@
     import PauseIcon from './icons/Pause.svelte'
     import ResetIcon from './icons/Reset.svelte'
     import { onMount } from 'svelte'
-    import { cellSize, next, random } from './game'
+    import { cellSize, next, random, fps } from './game'
 
     let playing = false
     let interval = null
@@ -24,6 +24,7 @@
                 ctx.fill()
             })
         })
+        fps.calculate()
     }
     const onPlay = () => {
         if (playing) {
@@ -33,7 +34,7 @@
             interval = setInterval(() => {
                 currentGrid = next(currentGrid)
                 draw(ctx, currentGrid)
-            }, 25)
+            }, 1)
             playing = true
         }
     }
@@ -53,6 +54,8 @@
 </script>
 
 <svelte:window on:resize={onRand} />
+
+<h1 class="absolute top-0 left-0 text-2xl bg-white font-bold">{$fps}</h1>
 
 <div class="absolute flex justify-center bottom-5 w-full">
     <div class="flex border shadow-2xl rounded-xl bg-white">
