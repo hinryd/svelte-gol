@@ -8,10 +8,10 @@
     let playing = false
     let interval = null
     let currentGrid = random()
-    let cellRadius = cellSize / 2
+    let cellRadius = $cellSize / 2
     let canvas: HTMLCanvasElement
     let ctx: CanvasRenderingContext2D
-    const offset = (n: number) => n * (cellSize + 2) + cellRadius + 1
+    const offset = (n: number) => n * ($cellSize + 2) + cellRadius + 1
     const draw = (ctx: CanvasRenderingContext2D, grid: (0 | 1)[][]) => {
         canvas.width = window.innerWidth
         canvas.height = window.innerHeight
@@ -71,8 +71,17 @@
                 <PlayIcon />
             </button>
         {/if}
-        <button class="p-4 outline-none" on:click={onRand}><ResetIcon /></button
-        >
+        <button class="p-4 outline-none" on:click|preventDefault={onRand}>
+            <ResetIcon />
+        </button>
+        <input
+            class="m-4 w-24"
+            type="range"
+            min="1"
+            max="10"
+            bind:value={$cellSize}
+            on:change={onRand}
+        />
     </div>
 </div>
 
