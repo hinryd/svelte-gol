@@ -3,16 +3,16 @@
     import PauseIcon from './icons/Pause.svelte'
     import ResetIcon from './icons/Reset.svelte'
     import { onMount } from 'svelte'
-    import { cellSize, next, random, fps } from './game'
+    import { cellSize, random, fps, betterNext } from './game'
 
     let playing = false
     let interval = null
     let currentGrid = random()
-    let cellRadius = $cellSize / 2
+    let cellRadius = $cellSize
     let canvas: HTMLCanvasElement
     let ctx: CanvasRenderingContext2D
-    const offset = (n: number) => n * ($cellSize + 2) + cellRadius + 1
-    const draw = (ctx: CanvasRenderingContext2D, grid: (0 | 1)[][]) => {
+    const offset = (n: number) => n * $cellSize
+    const draw = (ctx: CanvasRenderingContext2D, grid: boolean[][]) => {
         canvas.width = window.innerWidth
         canvas.height = window.innerHeight
         grid.forEach((row, y) => {
@@ -20,7 +20,7 @@
                 const color = isAlive ? 'gray' : 'white'
                 ctx.fillStyle = color
                 ctx.beginPath()
-                ctx.arc(offset(x), offset(y), cellRadius, 0, 2 * Math.PI, false)
+                ctx.rect(offset(x), offset(y), $cellSize, $cellSize)
                 ctx.fill()
             })
         })
@@ -32,9 +32,9 @@
             playing = false
         } else {
             interval = setInterval(() => {
-                currentGrid = next(currentGrid)
+                currentGrid = betterNext(currentGrid)
                 draw(ctx, currentGrid)
-            }, 1)
+            }, 100)
             playing = true
         }
     }
@@ -55,7 +55,7 @@
 
 <svelte:window on:resize={onRand} />
 
-<h1 class="absolute top-0 left-0 text-2xl bg-white font-bold">{$fps}</h1>
+<!-- <h1 class="absolute top-0 left-0 text-2xl bg-white font-bold">{$fps}</h1> -->
 
 <div class="absolute flex justify-center bottom-5 w-full">
     <div class="flex border shadow-2xl rounded-xl bg-white">
